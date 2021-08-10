@@ -15,6 +15,7 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 import java.io.StringReader;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author runzhouwu
@@ -24,7 +25,7 @@ import java.io.IOException;
 public class DemoDW {
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         // read
         String fileName = "src/main/resources/1707.xlsx";
@@ -36,7 +37,7 @@ public class DemoDW {
         excelReader.read(readSheet);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
         excelReader.finish();
-
+        TimeUnit.MINUTES.sleep(5);
     }
 
     private static String WordSplition(String sentence) throws IOException {

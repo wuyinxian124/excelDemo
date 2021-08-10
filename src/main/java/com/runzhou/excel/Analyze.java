@@ -1,6 +1,9 @@
 package com.runzhou.excel;
 
 import com.runzhou.excel.pojo.DemoData;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
 
@@ -16,6 +19,8 @@ import java.util.List;
  */
 public class Analyze {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Analyze.class);
+
     private List<DemoData> beforeData;
 
     private boolean begin;
@@ -24,12 +29,13 @@ public class Analyze {
 
     }
 
-    private final String[] index = {"很好","不足","其他","无","建议"};
+    private final String[] indexItem = {"很好","不足","其他","无","建议"};
     private final String[][] valueKey = {
             {"很好","没问题","没有问题"},
             {"有问题","不方便"},
             {"建议"},
-            {"无","跳过"}
+            {"无","跳过"},
+            {"建议"}
     };
     public void setBeforeData(List<DemoData> beforeData) {
         this.beforeData = beforeData;
@@ -37,8 +43,16 @@ public class Analyze {
 
     public void notifyAnalyze(){
         begin = true;
+        new Thread(new analyzeThread()).start();
     }
 
+    class analyzeThread implements Runnable{
+
+        @Override
+        public void run() {
+            analyze();
+        }
+    }
     private void analyze() {
         while(!begin){
             System.out.println("wait  ..");
@@ -55,6 +69,12 @@ public class Analyze {
                     index++;
                 }
 
+                if(index < 5){
+                    LOG.info("user {} say {} match {}",demoData.getName(),demoData.getContent(),indexItem[index]);
+                }else{
+                    LOG.info("user {} say {} had not match any item,which keyList {}",
+                            demoData.getName(),demoData.getContent(), StringUtils.join(keyList,"|"));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
