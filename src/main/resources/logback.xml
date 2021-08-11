@@ -14,6 +14,9 @@
     <property name="log_dir" value="./log"/>
     <property name="log_pattern"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %logger{36} %M [line:%L] %-5level - %msg%n"/>
+    <property name="log_simple"
+              value="- %msg%n"/>
+
 
     <!-- 日志最大的历史 7天 -->
     <property name="maxHistory" value="7"/>
@@ -99,7 +102,7 @@
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>${log_pattern}</pattern>
+            <pattern>${log_simple}</pattern>
         </encoder>
     </appender>
 
@@ -135,6 +138,50 @@
         </encoder>
     </appender>
 
+    <appender name="wu" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log_dir}/${fileTag}-wu-log.log</File>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}/${fileTag}-wu-log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>12</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>${log_simple}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="more" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log_dir}/${fileTag}-more-log.log</File>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}/${fileTag}-more-log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>12</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>${log_simple}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="moreLog" additivity="false" level="INFO">
+        <appender-ref ref="more"/>
+    </logger>
+    <logger name="wuLog" additivity="false" level="INFO">
+        <appender-ref ref="wu"/>
+    </logger>
+
+
 <!--    <logger name="org.apache.http" level="OFF">-->
 <!--    </logger>-->
 
@@ -146,6 +193,11 @@
 
         <!-- 控制台输出 -->
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="WARN-APPENDER"/>
+        <appender-ref ref="INFO-APPENDER"/>
+
+<!--        <appender-ref ref="wm-APPENDER"/>-->
+<!--        <appender-ref ref="more-APPENDER"/>-->
         <!-- 文件输出 -->
 <!--        <appender-ref ref="ALL-APPENDER"/>
         <appender-ref ref="ERROR-APPENDER"/>

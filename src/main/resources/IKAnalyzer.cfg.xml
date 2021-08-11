@@ -4,8 +4,8 @@
 
     <comment>IK Analyzer 扩展配置</comment>
     <!--配置自己的扩展词 -->
-    <entry key="ext_dict">classpath:extword.dict</entry>
+    <entry key="ext_dict">./extword.dic</entry>
     <!-- 配置自己的忽略词 -->
-    <entry key="ext_stopwords">classpath:stopword.dic</entry>
+    <entry key="ext_stopwords">./stopword.dic</entry>
 
 </properties>

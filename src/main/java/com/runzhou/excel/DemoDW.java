@@ -4,17 +4,13 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.runzhou.excel.pojo.DemoData;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.wltea.analyzer.core.IKSegmenter;
-import org.wltea.analyzer.core.Lexeme;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
-import java.io.StringReader;
-
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,12 +28,17 @@ public class DemoDW {
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
 //        EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
 
-        ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener(new Analyze())).build();
+        Analyze analyze = new Analyze();
+        ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener(analyze)).build();
         ReadSheet readSheet = EasyExcel.readSheet(0).build();
         excelReader.read(readSheet);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
         excelReader.finish();
-        TimeUnit.MINUTES.sleep(5);
+        while (!analyze.isDone()){
+            TimeUnit.SECONDS.sleep(2);
+        }
+        System.out.println("done ..");
+
     }
 
     private static String WordSplition(String sentence) throws IOException {
